@@ -11,7 +11,7 @@ module.exports = function (app) {
         }else{
             credential = generateToken(req.headers.email);        
             if(credential.token != undefined){            
-                mailSent = sendMail(req.headers.email, "Your token is here!", "<html><body><h1>Your token is: "+credential.token+" </h1></body></html>");
+                mailSent = sendMail(req.headers.email, "GET your 2FA token!", "<html><body><h1>Your 2FA token is: "+credential.token+" </h1></body></html>");
                 res.status(200).json({ secret: credential.secret.secret, message: 'Token sent by mail!' }); 
             }else{
                 res.status(500).json({ message: 'Error generating token!' });
@@ -83,14 +83,14 @@ function sendMail(email, subject, content){
     defaultClient = brevo.ApiClient.instance;
 
     apiKey = defaultClient.authentications['api-key'];
-    apiKey.apiKey = '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';
+    apiKey.apiKey = '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';
 
     apiInstance = new brevo.TransactionalEmailsApi();
     sendSmtpEmail = new brevo.SendSmtpEmail();
     
     sendSmtpEmail.subject = subject; 
     sendSmtpEmail.htmlContent = content; 
-    sendSmtpEmail.sender = { "name": "Backend", "email": Buffer.from("cm9nZXJndWltYXJhZXNjcnV6QGdtYWlsLmNvbQ==", 'base64').toString('ascii')};
+    sendSmtpEmail.sender = { "name": "Backend", "email": Buffer.from("cm9naGVyX2NydXpAaG90bWFpbC5jb20=", 'base64').toString('ascii')};
     sendSmtpEmail.to = [
         { "email": email, "name": email }
     ];
