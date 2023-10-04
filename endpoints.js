@@ -83,7 +83,7 @@ function sendMail(email, subject, content){
     defaultClient = brevo.ApiClient.instance;
 
     apiKey = defaultClient.authentications['api-key'];
-    apiKey.apiKey = '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';
+    apiKey.apiKey = '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';
 
     apiInstance = new brevo.TransactionalEmailsApi();
     sendSmtpEmail = new brevo.SendSmtpEmail();
