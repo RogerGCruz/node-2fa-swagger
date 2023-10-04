@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>2FA</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    body { padding-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="jumbotron">
+        <div id="step1-email">
+            <label>Enter your e-mail: </label>
+            <input type="text" id="email" name="email"></input>
+            <button onclick='initiateTwoFactorAuth()'>Login</button>
+        </div>
+        <div id="step2-token" style="display: none;">
+            <label>Enter your token send to your e-mail: </label>
+            <input type="text" id="token" name="token"></input>
+            <input type="hidden" id="secret" name="secret"></input>
+            <button onclick='finalizeTwoFactorAuth()'>Login</button>
+        </div>
+        <div id="step3-success" style="display: none;">
+            <label>Login successfully with 2FA!!!</label>
+            <button onclick='restartTwoFactorAuth()'>Restart</button>
+        </div>
+        <div id="message-error" style="display: none;">
+            <label id="message-error-label">Error!!!</label>            
+        </div>
+    </div>
+  </div>
+    
+</body>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var api = 
+        {
+            'getToken': function() {
+                $.ajax({
+                    url: '/token',
+                    type: 'POST',
+                    headers: {'email': $('#email').val()},
+                    data: '',
+                    dataType: 'json',
+                    async: false,
+                    beforeSend: function() {
+                        $("#message-error").hide();
+                    },
+                    success: function(json) {
+                        console.log(json);
+                        $("#step1-email").hide();
+                        $("#step2-token").show();
+                        $('#secret').val(json.secret);
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        $("#message-error").show();
+                        $('#message-error-label').html(xhr.responseText);
+                        
+                    }
+                });
+            },
+            'login': function() {
+                $.ajax({
+                    url: '/login',
+                    type: 'POST',
+                    headers: {'secret': $('#secret').val(), 'token': $('#token').val()},
+                    data: '',
+                    dataType: 'json',
+                    async: false,
+                    beforeSend: function() {
+                        $("#message-error").hide();
+                    },
+                    success: function(json) {
+                        console.log(json);
+                        $("#step2-token").hide();
+                        $("#step3-success").show();
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        $("#message-error").show();
+                        $('#message-error-label').html(xhr.responseText);
+                        
+                    }
+                });
+            }
+        };
+    function initiateTwoFactorAuth() {
+        console.log("Generating 2FA Token!");
+        api.getToken();
+    }
+    function finalizeTwoFactorAuth() {
+        console.log("Validating 2FA Token!");
+        api.login();
+    }
+    function restartTwoFactorAuth() {
+        window.location.href = "/";
+    }
+</script>
