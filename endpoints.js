@@ -83,14 +83,14 @@ function sendMail(email, subject, content){
     defaultClient = brevo.ApiClient.instance;
 
     apiKey = defaultClient.authentications['api-key'];
-    apiKey.apiKey = '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';
+    apiKey.apiKey = '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';
 
     apiInstance = new brevo.TransactionalEmailsApi();
     sendSmtpEmail = new brevo.SendSmtpEmail();
     
     sendSmtpEmail.subject = subject; 
     sendSmtpEmail.htmlContent = content; 
-    sendSmtpEmail.sender = { "name": "Backend", "email": "no-reply@xgrow.com" };
+    sendSmtpEmail.sender = { "name": "Backend", "email": Buffer.from("cm9nZXJndWltYXJhZXNjcnV6QGdtYWlsLmNvbQ==", 'base64').toString('ascii')};
     sendSmtpEmail.to = [
         { "email": email, "name": email }
     ];
